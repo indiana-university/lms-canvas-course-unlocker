@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.microservicestemplate.config;
+package edu.iu.uits.lms.courseunlocker.config;
 
 import edu.iu.uits.lms.common.oauth.CustomJwtAuthenticationConverter;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
@@ -15,7 +15,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 4)
-    public static class QuizProctorWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -24,7 +24,7 @@ public class SecurityConfig {
                   .requestMatchers().antMatchers("/lti", "/app/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/lti").permitAll()
+                  .antMatchers("/lti").permitAll() // use this syntax for the lock status possibly change courseid to end
                   .antMatchers("/app/**").hasRole(LtiAuthenticationProvider.LTI_USER);
 
             //Need to disable csrf so that we can use POST via REST
@@ -44,18 +44,18 @@ public class SecurityConfig {
 
     }
 
-
+// Open up the rest endpoint for checking lock status
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
-    public static class QuizProctorRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.requestMatchers().antMatchers("/rest/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/rest/**")
-                  .access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
+                  .antMatchers("/rest/course/unlockstatus/**").permitAll()
+                  //.access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                   .and()
                   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                   .and()
@@ -66,7 +66,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
-    public static class QuizProctorCatchAllSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerCatchAllSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {

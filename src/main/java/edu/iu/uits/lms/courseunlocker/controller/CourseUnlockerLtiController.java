@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.microservicestemplate.controller;
+package edu.iu.uits.lms.courseunlocker.controller;
 
 import canvas.helpers.CanvasConstants;
 import edu.iu.uits.lms.lti.LTIConstants;
@@ -24,10 +24,15 @@ import java.util.Map;
 @Controller
 @RequestMapping({"/lti"})
 @Slf4j
-public class MicroservicesTemplateLtiController extends LtiController {
+public class CourseUnlockerLtiController extends LtiController {
 
     private boolean openLaunchUrlInNewWindow = false;
 
+
+    /**
+     *
+     * instead of going to index, do the call to do whatever the unlocker is supposed to do
+     */
     @Override
     protected String getLaunchUrl(Map<String, String> launchParams) {
         String courseId = launchParams.get(CUSTOM_CANVAS_COURSE_ID);
@@ -76,7 +81,7 @@ public class MicroservicesTemplateLtiController extends LtiController {
 
     @Override
     protected String getToolContext() {
-        return "lms_lti_quizproctor";
+        return "lms_lti_courseunlocker";
     }
 
     @Override

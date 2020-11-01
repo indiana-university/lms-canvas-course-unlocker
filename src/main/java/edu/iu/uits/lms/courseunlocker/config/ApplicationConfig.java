@@ -1,11 +1,17 @@
-package edu.iu.uits.lms.microservicestemplate.config;
+package edu.iu.uits.lms.courseunlocker.config;
 
+import edu.iu.uits.lms.common.cors.LmsCorsInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Configuration
 @EnableWebMvc
@@ -25,5 +31,26 @@ public class ApplicationConfig implements WebMvcConfigurer {
       registry.addResourceHandler("/app/webjars/**").addResourceLocations("/webjars/").resourceChain(true);
       registry.addResourceHandler("/app/jsreact/**").addResourceLocations("classpath:/META-INF/resources/jsreact/").resourceChain(true);
       registry.addResourceHandler("/app/jsrivet/**").addResourceLocations("classpath:/META-INF/resources/jsrivet/").resourceChain(true);
+   }
+
+   @Override
+   public void addInterceptors(InterceptorRegistry registry) {
+      List<HttpMethod> allowedMethodList = new ArrayList<>();
+      allowedMethodList.add(HttpMethod.GET);
+
+      try {
+
+//         registry.addInterceptor(new LmsCorsInterceptor("/unlockstatus/query",
+//                 "*",
+//                 allowedMethodList,
+//                 null));
+
+         registry.addInterceptor(new LmsCorsInterceptor("/unlockstatus/toggle",
+                 "*",
+                 allowedMethodList,
+                 null));
+      } catch (Exception e) {
+         log.error(e.toString());
+      }
    }
 }
