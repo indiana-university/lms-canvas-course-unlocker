@@ -1,6 +1,7 @@
 package edu.iu.uits.lms.courseunlocker.config;
 
 import edu.iu.uits.lms.common.oauth.CustomJwtAuthenticationConverter;
+import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -25,7 +26,7 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers("/lti").permitAll() // use this syntax for the lock status possibly change courseid to end
-                  .antMatchers("/app/**").hasRole(LtiAuthenticationProvider.LTI_USER);
+                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
 
             //Need to disable csrf so that we can use POST via REST
             http.csrf().disable();
@@ -54,7 +55,7 @@ public class SecurityConfig {
             http.requestMatchers().antMatchers("/rest/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/rest/course/unlockstatus/**").permitAll()
+                  .antMatchers("/course/unlockstatus/**").permitAll()
                   //.access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                   .and()
                   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)

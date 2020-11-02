@@ -1,11 +1,11 @@
 package edu.iu.uits.lms.courseunlocker.services;
 
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
+import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.rest.CourseUnlockerRestController;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Ignore;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,87 +14,49 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.authentication;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Ignore
 @RunWith(SpringRunner.class)
 @WebMvcTest(CourseUnlockerRestController.class)
 @Import(ToolConfig.class)
 @Slf4j
 @ActiveProfiles("none")
 public class RestLaunchSecurityTest {
+
+   public static String COURSE_ID_TST = "1234";
+
    @Autowired
    private MockMvc mvc;
 
    @MockBean
-   CourseUnlockerService courseUnlockerService;
+   private CourseUnlockerService courseUnlockerService;
+
+   @Before
+   public void setup() {
+      CourseUnlockStatus status = new CourseUnlockStatus(true, true, "1234");
+      when(courseUnlockerService.getCourseUnlockStatus(COURSE_ID_TST)).thenReturn(status);
+   }
 
    @Test
    public void restNoAuthnLaunch() throws Exception {
-      //This is a secured endpoint and should not not allow access without authn
+      //This is not a secured endpoint so should be successful
       SecurityContextHolder.getContext().setAuthentication(null);
-      mvc.perform(get("/rest/course/unlockstatus/")
+      mvc.perform(get("/rest/course/unlockstatus/1234")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+            .andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.jsonPath("$.buttonDisplayText").value("Unlock Course"))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.buttonRendered").value(true))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courseLocked").value(true))
+            .andExpect(MockMvcResultMatchers.jsonPath("$.courseId").value(COURSE_ID_TST));
    }
 
-//   @Test
-//   public void restAuthnLaunch() throws Exception {
-//      Jwt jwt = createJwtToken("asdf");
-//
-//      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_lms:rest", "ROLE_LMS_REST_ADMINS");
-//      JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
-//
-//      //This is a secured endpoint and should not not allow access without authn
-//      mvc.perform(get("/rest/properties/foo")
-//            .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .with(authentication(token)))
-//            .andExpect(status().isOk());
-//   }
-//
-//   @Test
-//   public void restAuthnLaunchWithWrongScope() throws Exception {
-//      Jwt jwt = createJwtToken("asdf");
-//
-//      Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("SCOPE_read", "ROLE_NONE_YA");
-//      JwtAuthenticationToken token = new JwtAuthenticationToken(jwt, authorities);
-//
-//      //This is a secured endpoint and should not not allow access without authn
-//      mvc.perform(get("/rest/properties/foo")
-//            .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-//            .contentType(MediaType.APPLICATION_JSON)
-//            .with(authentication(token)))
-//            .andExpect(status().isForbidden());
-//   }
-//
-//   public static Jwt createJwtToken(String username) {
-//      Jwt jwt = Jwt.withTokenValue("fake-token")
-//            .header("typ", "JWT")
-//            .header("alg", SignatureAlgorithm.RS256.getValue())
-//            .claim("user_name", username)
-//            .claim("client_id", username)
-//            .notBefore(Instant.now())
-//            .expiresAt(Instant.now().plus(1, ChronoUnit.HOURS))
-//            .subject(username)
-//            .build();
-//
-//      return jwt;
-//   }
 }

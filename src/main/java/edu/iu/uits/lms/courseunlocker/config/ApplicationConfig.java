@@ -39,13 +39,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
       allowedMethodList.add(HttpMethod.GET);
 
       try {
-
-//         registry.addInterceptor(new LmsCorsInterceptor("/unlockstatus/query",
-//                 "*",
-//                 allowedMethodList,
-//                 null));
-
-         registry.addInterceptor(new LmsCorsInterceptor("/unlockstatus/toggle",
+         registry.addInterceptor(new LmsCorsInterceptor("/rest/course/unlockstatus",
                  "*",
                  allowedMethodList,
                  null));

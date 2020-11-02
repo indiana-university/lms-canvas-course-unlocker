@@ -5,12 +5,9 @@ import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.controller.LtiAuthenticationTokenAwareController;
-import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
+@RequestMapping("/app")
 @Slf4j
 public class CourseUnlockerController extends LtiAuthenticationTokenAwareController {
 
