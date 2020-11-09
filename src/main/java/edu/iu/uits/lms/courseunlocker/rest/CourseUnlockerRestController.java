@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/rest/course")
+@RequestMapping("/rest")
 @Slf4j
 public class CourseUnlockerRestController extends CourseUnlockerController {
 

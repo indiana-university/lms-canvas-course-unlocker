@@ -49,7 +49,7 @@ public class RestLaunchSecurityTest {
    public void restNoAuthnLaunch() throws Exception {
       //This is not a secured endpoint so should be successful
       SecurityContextHolder.getContext().setAuthentication(null);
-      mvc.perform(get("/rest/course/unlockstatus/1234")
+      mvc.perform(get("/rest/unlockstatus/1234")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())

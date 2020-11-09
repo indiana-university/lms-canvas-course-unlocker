@@ -86,6 +86,20 @@ public class AppLaunchSecurityTest {
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
               .andExpect(status().isOk());
+
+      // Now try as an admin
+      token = new LtiAuthenticationToken("userId",
+              COURSE_ID_TST, "systemId",
+              AuthorityUtils.createAuthorityList(LTIConstants.STUDENT_AUTHORITY, "authority"),
+              "unit_test");
+
+      SecurityContextHolder.getContext().setAuthentication(token);
+
+      //This is a secured endpoint and should not not allow access without authn
+      mvc.perform(get("/app/index/" + COURSE_ID_TST)
+              .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+              .contentType(MediaType.APPLICATION_JSON))
+              .andExpect(status().isOk());
    }
 
    @Test

@@ -28,7 +28,6 @@ public class CourseUnlockerLtiController extends LtiController {
 
     private boolean openLaunchUrlInNewWindow = false;
 
-
     /**
      *
      * instead of going to index, do the call to do whatever the unlocker is supposed to do
@@ -70,9 +69,6 @@ public class CourseUnlockerLtiController extends LtiController {
         String courseTitle = launchParams.get(BasicLTIConstants.CONTEXT_TITLE);
 
         HttpSession session = request.getSession();
-//        session.setAttribute(Constants.COURSE_TITLE_KEY, courseTitle);
-//        session.setAttribute(Constants.USER_EMAIL_KEY, userEmail);
-//        session.setAttribute(Constants.USER_SIS_ID_KEY, userSisId);
 
         LtiAuthenticationToken token = new LtiAuthenticationToken(userId,
                 courseId, systemId, AuthorityUtils.createAuthorityList(LtiAuthenticationProvider.LTI_USER_ROLE, authority), getToolContext());
@@ -92,32 +88,4 @@ public class CourseUnlockerLtiController extends LtiController {
         return LAUNCH_MODE.FORWARD;
     }
 
-    /**
-     * Given a list of user roles, return the internal equivalent role
-     * @param userRoles
-     * @param instructorRoles
-     * @return
-     */
-    @Override
-    protected String returnEquivalentAuthority(List<String> userRoles, List<String> instructorRoles) {
-        for (String instructorRole : instructorRoles) {
-            if (userRoles.contains(instructorRole)) {
-                return LTIConstants.INSTRUCTOR_AUTHORITY;
-            }
-        }
-
-        if (userRoles.contains(CanvasConstants.TA_ROLE)) {
-            return LTIConstants.TA_AUTHORITY;
-        }
-
-        if (userRoles.contains(CanvasConstants.DESIGNER_ROLE)) {
-            return LTIConstants.DESIGNER_AUTHORITY;
-        }
-
-        if (userRoles.contains(CanvasConstants.OBSERVER_ROLE)) {
-            return LTIConstants.OBSERVER_AUTHORITY;
-        }
-
-        return LTIConstants.STUDENT_AUTHORITY;
-    }
 }

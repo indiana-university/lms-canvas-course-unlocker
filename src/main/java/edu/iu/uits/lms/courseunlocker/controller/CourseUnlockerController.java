@@ -8,11 +8,13 @@ import edu.iu.uits.lms.lti.controller.LtiAuthenticationTokenAwareController;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
@@ -28,14 +30,11 @@ public class CourseUnlockerController extends LtiAuthenticationTokenAwareControl
     @Autowired
     CourseUnlockerService courseUnlockerService = null;
 
-    // move toggle here
     @RequestMapping("/index/{courseId}")
-    @Secured(LTIConstants.INSTRUCTOR_AUTHORITY)
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY, LTIConstants.ADMIN_AUTHORITY})
     public ModelAndView index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
         log.debug("in /index");
         LtiAuthenticationToken token = getValidatedToken(courseId);
-        String displayText = courseUnlockerService.getCourseUnlockStatus(courseId).isCourseLocked() ? "Unlock course" : "Lock course";
-        model.addAttribute("displayText", displayText);
         model.addAttribute("courseId", courseId);
 
         CourseUnlockStatus status = courseUnlockerService.getCourseUnlockStatus(courseId);
@@ -43,12 +42,18 @@ public class CourseUnlockerController extends LtiAuthenticationTokenAwareControl
             try {
                 courseUnlockerService.toggleCourseLock(courseId);
             } catch (Exception e) {
-                log.error("Exception trying to unlock course with id " + courseId);
-                // TODO what do I do if there is an exception?
+                log.error("Exception trying to unlock course with id " + courseId, e);
+                throw new CanvasException();
             }
+        } else {
+            log.info("Attempt to change lock status of course " + courseId + " but course not eligible. Course not updated.");
         }
 
         return new ModelAndView("index");
+    }
+
+    @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Error saving course dates in Canvas to lock/unlock course")
+    public class CanvasException extends RuntimeException {
     }
 
     @RequestMapping(value = "/accessDenied")

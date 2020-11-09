@@ -115,22 +115,6 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-core</artifactId>
-            <version>2.9.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-spring-web</artifactId>
-            <version>2.9.2</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-        </dependency>
     </dependencies>
 
 
@@ -140,30 +124,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>com.github.kongchen</groupId>
-                <artifactId>swagger-maven-plugin</artifactId>
-                <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <springmvc>true</springmvc>
-                            <schemes>http,https</schemes>
-                            <host>lms-course-unlocker-impl:8080</host>
-                            <basePath>/</basePath>
-                            <locations>
-                                <location>lms.course-unlocker</location>
-                            </locations>
-                            <info>
-                                <title>course unlocker api</title>
-                                <version>${project.version}</version>
-                            </info>
-                            <outputFormats>json</outputFormats>
-                            <swaggerDirectory>${project.build.directory}/swagger-ui</swaggerDirectory>
-                            <attachSwaggerArtifact>true</attachSwaggerArtifact>
-                        </apiSource>
-                    </apiSources>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>com.spotify</groupId>

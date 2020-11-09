@@ -38,6 +38,7 @@ public class CourseUnlockerService  {
       boolean restrictEnrollmentsToCourseDates = false;
 
       Course course = coursesApi.getCourse(courseId);
+
       OffsetDateTime courseStartDate = CourseHelper.getStartOffsetDateTime(course);
 
       OffsetDateTime newEndDate = null;
@@ -47,7 +48,6 @@ public class CourseUnlockerService  {
       // Figure out what the new date should be (if anything)
       // We're unlocking...
       if (currentStatus.isCourseLocked()) {
-
          if (courseStartDate != null && now.isBefore(courseStartDate) || (courseStartDate == null)) {
             newStartDate = now;
          }
@@ -57,6 +57,7 @@ public class CourseUnlockerService  {
          restrictEnrollmentsToCourseDates = true;
          // course is unlocked
       }
+
       // else (if locking) the behavior is to remove the course's end date and set restrictEnrollmentToCourseDates to false.
       // That's happening right now if nothing is done due to initialization default variable values.
       // This is documented here in case in the future more functionality is needed more than the default for locking.

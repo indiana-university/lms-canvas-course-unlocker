@@ -25,8 +25,8 @@ public class SecurityConfig {
                   .requestMatchers().antMatchers("/lti", "/app/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/lti").permitAll() // use this syntax for the lock status possibly change courseid to end
-                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
+                  .antMatchers("/lti").permitAll()
+                  .antMatchers("/app/**").hasAnyRole(LTIConstants.INSTRUCTOR_ROLE, LTIConstants.ADMIN_ROLE);
 
             //Need to disable csrf so that we can use POST via REST
             http.csrf().disable();
@@ -45,7 +45,6 @@ public class SecurityConfig {
 
     }
 
-// Open up the rest endpoint for checking lock status
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
     public static class CourseUnlockerRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
@@ -55,8 +54,7 @@ public class SecurityConfig {
             http.requestMatchers().antMatchers("/rest/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/course/unlockstatus/**").permitAll()
-                  //.access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
+                  .antMatchers("/unlockstatus/**").permitAll()
                   .and()
                   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                   .and()

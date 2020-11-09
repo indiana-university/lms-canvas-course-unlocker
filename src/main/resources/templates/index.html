@@ -1,17 +1,17 @@
 <!DOCTYPE HTML>
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout}">
-<head>
-    <title>Courseunlock</title>
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+  <head>
+    <title>Unlock Course</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <script th:inline="javascript">
         parent.postMessage({subject: 'iu.unlockstatus', courseid: [[${courseId}]]}, '*');
     </script>
-</head>
-<body>
-    <div layout:fragment="content">
-        <button th:text="${displayText}" />
-    </div>
-</body>
+  </head>
+  <body>
+    <footer class="rvt-ts-12 rvt-container rvt-m-top-lg">
+        <div id="footer" th:text="${@serverInfo}"></div>
+    </footer>
+  </body>
 </html>
