@@ -26,7 +26,7 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers("/lti").permitAll()
-                  .antMatchers("/app/**").hasAnyRole(LTIConstants.INSTRUCTOR_ROLE, LTIConstants.ADMIN_ROLE);
+                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
 
             //Need to disable csrf so that we can use POST via REST
             http.csrf().disable();
@@ -40,7 +40,7 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/app/jsrivet/**", "/app/webjars/**", "/actuator/**", "/app/css/**", "/app/js/**");
+            web.ignoring().antMatchers("/actuator/**");
         }
 
     }

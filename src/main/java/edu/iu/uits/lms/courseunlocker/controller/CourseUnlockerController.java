@@ -31,7 +31,7 @@ public class CourseUnlockerController extends LtiAuthenticationTokenAwareControl
     CourseUnlockerService courseUnlockerService = null;
 
     @RequestMapping("/index/{courseId}")
-    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY, LTIConstants.ADMIN_AUTHORITY})
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
     public ModelAndView index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
         log.debug("in /index");
         LtiAuthenticationToken token = getValidatedToken(courseId);
@@ -43,17 +43,18 @@ public class CourseUnlockerController extends LtiAuthenticationTokenAwareControl
                 courseUnlockerService.toggleCourseLock(courseId);
             } catch (Exception e) {
                 log.error("Exception trying to unlock course with id " + courseId, e);
-                throw new CanvasException();
+                throw new CourseUnlockerException();
             }
         } else {
-            log.info("Attempt to change lock status of course " + courseId + " but course not eligible. Course not updated.");
+            log.error("Attempt to change lock status of course " + courseId + " but course not eligible. Course not updated.");
+            throw new CourseUnlockerException();
         }
 
         return new ModelAndView("index");
     }
 
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Error saving course dates in Canvas to lock/unlock course")
-    public class CanvasException extends RuntimeException {
+    public class CourseUnlockerException extends RuntimeException {
     }
 
     @RequestMapping(value = "/accessDenied")

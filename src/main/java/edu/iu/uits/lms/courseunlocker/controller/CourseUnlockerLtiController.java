@@ -28,10 +28,6 @@ public class CourseUnlockerLtiController extends LtiController {
 
     private boolean openLaunchUrlInNewWindow = false;
 
-    /**
-     *
-     * instead of going to index, do the call to do whatever the unlocker is supposed to do
-     */
     @Override
     protected String getLaunchUrl(Map<String, String> launchParams) {
         String courseId = launchParams.get(CUSTOM_CANVAS_COURSE_ID);
