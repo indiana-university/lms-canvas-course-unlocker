@@ -73,7 +73,7 @@ public class CourseUnlockerLtiController extends LtiController {
 
     @Override
     protected String getToolContext() {
-        return "lms_lti_courseunlocker";
+        return "lms_courseunlocker";
     }
 
     @Override
