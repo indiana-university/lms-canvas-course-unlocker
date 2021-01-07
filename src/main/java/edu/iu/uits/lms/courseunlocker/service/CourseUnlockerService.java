@@ -8,6 +8,7 @@ import canvas.helpers.TermHelper;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -18,10 +19,14 @@ import java.util.Date;
 public class CourseUnlockerService  {
 
    @Autowired
+   @Qualifier("coursesApiViaAnonymous")
+   private CoursesApi coursesApiViaAnonymous = null;
+
+   @Autowired
    private CoursesApi coursesApi = null;
 
    public CourseUnlockStatus getCourseUnlockStatus(String courseId) {
-      Course course = coursesApi.getCourse(courseId);
+      Course course = coursesApiViaAnonymous.getCourse(courseId);
       CanvasTerm term = course.getTerm();
       Date now = new Date();
 
