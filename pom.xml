@@ -4,7 +4,7 @@
     <artifactId>course-unlocker</artifactId>
     <packaging>jar</packaging>
     <name>course-unlocker</name>
-    <version>4.0.1</version>
+    <version>4.0.2-SNAPSHOT</version>
 
     <parent>
         <artifactId>lms2Wow</artifactId>
