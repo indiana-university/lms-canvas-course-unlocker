@@ -1,6 +1,7 @@
-package edu.iu.uits.lms.microservicestemplate.config;
+package edu.iu.uits.lms.courseunlocker.config;
 
 import edu.iu.uits.lms.common.oauth.CustomJwtAuthenticationConverter;
+import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
@@ -15,7 +16,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 4)
-    public static class QuizProctorWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -25,7 +26,7 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers("/lti").permitAll()
-                  .antMatchers("/app/**").hasRole(LtiAuthenticationProvider.LTI_USER);
+                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
 
             //Need to disable csrf so that we can use POST via REST
             http.csrf().disable();
@@ -39,23 +40,22 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/app/jsrivet/**", "/app/webjars/**", "/actuator/**", "/app/css/**", "/app/js/**");
+            web.ignoring().antMatchers("/actuator/**");
         }
 
     }
 
-
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 3)
-    public static class QuizProctorRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerRestSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.requestMatchers().antMatchers("/rest/**")
                   .and()
                   .authorizeRequests()
-                  .antMatchers("/rest/**")
-                  .access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
+                  .antMatchers("/rest/unlockstatus/**").permitAll()
+                  .antMatchers("/rest/**").access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                   .and()
                   .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                   .and()
@@ -66,7 +66,7 @@ public class SecurityConfig {
 
     @Configuration
     @Order(SecurityProperties.BASIC_AUTH_ORDER - 2)
-    public static class QuizProctorCatchAllSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class CourseUnlockerCatchAllSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {

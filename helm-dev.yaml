@@ -1,15 +1,15 @@
 namespace: default
-bootstrapSecret: "properties-2020-09-04"
+bootstrapSecret: "properties-2020-11-30"
 
 image:
-  repository: localhost:5000/microservices-template
+  repository: localhost:5000/course-unlocker
   pullPolicy: Never
   tag: unstable
 
 replicaCount: 1
 
 env:
-  JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dlogging.level.edu.iu.uits.lms=DEBUG"
+  JAVA_TOOL_OPTIONS: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -Dlogging.level.edu.iu.uits.lms=DEBUG -Dlogging.level.lms.instructure=DEBUG"
   APP_ENV: dev
 
 service:
@@ -21,3 +21,5 @@ service:
       name: remote-debug
 
 activeProfiles: "none"
+
+developmentMode: true
