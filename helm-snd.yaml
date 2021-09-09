@@ -15,7 +15,7 @@ ingress:
     - host: "course-unlocker-snd.apps-snd.iu.edu"
       paths: []
 
-activeProfiles: "snd"
+activeProfiles: "redis,snd"
 
 serviceAccountName: course-unlocker-snd
 
