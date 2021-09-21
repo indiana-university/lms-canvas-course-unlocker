@@ -1,7 +1,7 @@
 
 projectedSecret:
   - secret:
-      name: "properties-2020-11-30"
+      name: "properties-2021-06-07"
 
 image:
   tag: unstable-snd
@@ -14,3 +14,9 @@ ingress:
   hosts:
     - host: "course-unlocker-snd.apps-snd.iu.edu"
       paths: []
+
+activeProfiles: "redis,snd"
+
+serviceAccountName: course-unlocker-snd
+
+cluster: es-test
