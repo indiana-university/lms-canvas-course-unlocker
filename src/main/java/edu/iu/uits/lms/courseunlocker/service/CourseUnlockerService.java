@@ -1,14 +1,13 @@
 package edu.iu.uits.lms.courseunlocker.service;
 
-import canvas.client.generated.api.CoursesApi;
-import canvas.client.generated.model.CanvasTerm;
-import canvas.client.generated.model.Course;
-import canvas.helpers.CourseHelper;
-import canvas.helpers.TermHelper;
+import edu.iu.uits.lms.canvas.helpers.CourseHelper;
+import edu.iu.uits.lms.canvas.helpers.TermHelper;
+import edu.iu.uits.lms.canvas.model.CanvasTerm;
+import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
@@ -19,14 +18,10 @@ import java.util.Date;
 public class CourseUnlockerService  {
 
    @Autowired
-   @Qualifier("coursesApiViaAnonymous")
-   private CoursesApi coursesApiViaAnonymous = null;
-
-   @Autowired
-   private CoursesApi coursesApi = null;
+   private CourseService courseService = null;
 
    public CourseUnlockStatus getCourseUnlockStatus(String courseId) {
-      Course course = coursesApiViaAnonymous.getCourse(courseId);
+      Course course = courseService.getCourse(courseId);
       CanvasTerm term = course.getTerm();
       Date now = new Date();
 
@@ -42,7 +37,7 @@ public class CourseUnlockerService  {
 
       boolean restrictEnrollmentsToCourseDates = false;
 
-      Course course = coursesApi.getCourse(courseId);
+      Course course = courseService.getCourse(courseId);
 
       OffsetDateTime courseStartDate = CourseHelper.getStartOffsetDateTime(course);
 
@@ -68,7 +63,7 @@ public class CourseUnlockerService  {
       // This is documented here in case in the future more functionality is needed more than the default for locking.
 
       //Update the date
-      coursesApi.updateCourseEndDate(courseId, null, newStartDate, newEndDate, restrictEnrollmentsToCourseDates);
+      courseService.updateCourseEndDate(courseId, null, newStartDate, newEndDate, restrictEnrollmentsToCourseDates);
    }
 
 }

@@ -1,15 +1,14 @@
 package edu.iu.uits.lms.courseunlocker.services;
 
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
-import edu.iu.uits.lms.courseunlocker.controller.CourseUnlockerController;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
 import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -19,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
@@ -27,8 +25,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(CourseUnlockerController.class)
+@WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
 @Import(ToolConfig.class)
 @ActiveProfiles("none")
 public class AppLaunchSecurityTest {
@@ -41,7 +38,7 @@ public class AppLaunchSecurityTest {
    @MockBean
    private CourseUnlockerService courseUnlockerService;
 
-   @Before
+   @BeforeEach
    public void setup() {
       CourseUnlockStatus status = new CourseUnlockStatus(true, true, "1234");
       when(courseUnlockerService.getCourseUnlockStatus(COURSE_ID_TST)).thenReturn(status);
@@ -56,7 +53,7 @@ public class AppLaunchSecurityTest {
             .andExpect(status().isForbidden());
    }
 
-   @Test(expected = NestedServletException.class)
+   @Test
    public void appAuthnWrongContextLaunch() throws Exception {
       LtiAuthenticationToken token = new LtiAuthenticationToken("userId",
             "asdf", "systemId",
@@ -65,11 +62,12 @@ public class AppLaunchSecurityTest {
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not not allow access without authn
-      mvc.perform(get("/app/index/" + COURSE_ID_TST)
-            .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-            .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+      NestedServletException t = Assertions.assertThrows(NestedServletException.class, () ->
+              mvc.perform(get("/app/index/" + COURSE_ID_TST)
+                              .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                              .contentType(MediaType.APPLICATION_JSON))
+                      .andExpect(status().isOk())
+              );
    }
 
    @Test
