@@ -2,8 +2,8 @@ package edu.iu.uits.lms.courseunlocker.services;
 
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
-import edu.iu.uits.lms.courseunlocker.rest.CourseUnlockerRestController;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
+import edu.iu.uits.lms.lti.service.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

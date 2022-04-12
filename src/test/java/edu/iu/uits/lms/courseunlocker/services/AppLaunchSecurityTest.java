@@ -4,9 +4,7 @@ import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
 import edu.iu.uits.lms.lti.LTIConstants;
-import edu.iu.uits.lms.lti.security.LtiAuthenticationProvider;
-import edu.iu.uits.lms.lti.security.LtiAuthenticationToken;
-import org.junit.jupiter.api.Assertions;
+import edu.iu.uits.lms.lti.service.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +13,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.util.NestedServletException;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,7 +44,7 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void appNoAuthnLaunch() throws Exception {
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/app/index/"  + COURSE_ID_TST)
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
@@ -55,31 +53,27 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void appAuthnWrongContextLaunch() throws Exception {
-      LtiAuthenticationToken token = new LtiAuthenticationToken("userId",
-            "asdf", "systemId",
-            AuthorityUtils.createAuthorityList(LTIConstants.INSTRUCTOR_AUTHORITY, "authority"),
-            "unit_test");
+      OidcAuthenticationToken token = TestUtils.buildToken("userId",
+            "asdf", LTIConstants.INSTRUCTOR_AUTHORITY);
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      NestedServletException t = Assertions.assertThrows(NestedServletException.class, () ->
-              mvc.perform(get("/app/index/" + COURSE_ID_TST)
-                              .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
-                              .contentType(MediaType.APPLICATION_JSON))
-                      .andExpect(status().isOk())
-              );
+      mvc.perform(get("/app/index/" + COURSE_ID_TST)
+                      .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+                      .contentType(MediaType.APPLICATION_JSON))
+              .andExpect(status().isInternalServerError())
+              .andExpect(MockMvcResultMatchers.model().attributeExists("error"))
+              .andExpect(MockMvcResultMatchers.view().name ("error"));
    }
 
    @Test
    public void appAuthnLaunch() throws Exception {
-      LtiAuthenticationToken token = new LtiAuthenticationToken("userId",
-              COURSE_ID_TST, "systemId",
-              AuthorityUtils.createAuthorityList(LTIConstants.INSTRUCTOR_AUTHORITY, "authority"),
-              "unit_test");
+      OidcAuthenticationToken token = TestUtils.buildToken("userId",
+              COURSE_ID_TST, LTIConstants.INSTRUCTOR_AUTHORITY);
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/app/index/" + COURSE_ID_TST)
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
@@ -88,14 +82,12 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void appAuthnLaunchNonInstructor() throws Exception {
-      LtiAuthenticationToken token = new LtiAuthenticationToken("userId",
-              COURSE_ID_TST, "systemId",
-              AuthorityUtils.createAuthorityList(LTIConstants.TA_AUTHORITY, "authority"),
-              "unit_test");
+      OidcAuthenticationToken token = TestUtils.buildToken("userId",
+              COURSE_ID_TST, LTIConstants.TA_AUTHORITY);
 
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not not allow access without instructor authn
+      //This is a secured endpoint and should not allow access without instructor authn
       mvc.perform(get("/app/index/" + COURSE_ID_TST)
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
@@ -104,7 +96,7 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void randomUrlNoAuth() throws Exception {
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
@@ -113,13 +105,11 @@ public class AppLaunchSecurityTest {
 
    @Test
    public void randomUrlWithAuth() throws Exception {
-      LtiAuthenticationToken token = new LtiAuthenticationToken("userId",
-            COURSE_ID_TST, "systemId",
-            AuthorityUtils.createAuthorityList(LtiAuthenticationProvider.LTI_USER_ROLE, "authority"),
-            "unit_test");
+      OidcAuthenticationToken token = TestUtils.buildToken("userId",
+              COURSE_ID_TST, LTIConstants.BASE_USER_AUTHORITY);
       SecurityContextHolder.getContext().setAuthentication(token);
 
-      //This is a secured endpoint and should not not allow access without authn
+      //This is a secured endpoint and should not allow access without authn
       mvc.perform(get("/asdf/foobar")
             .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))

@@ -4,8 +4,9 @@ import edu.iu.uits.lms.canvas.config.EnableCanvasClient;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.common.server.ServerUtils;
-import edu.iu.uits.lms.lti.config.EnableLtiClient;
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
+import edu.iu.uits.lms.lti.config.EnableGlobalErrorHandler;
+import edu.iu.uits.lms.lti.config.EnableLtiClient;
 import edu.iu.uits.lms.redis.config.EnableRedisConfiguration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,8 @@ import java.util.Date;
 @SpringBootApplication
 @Slf4j
 @EnableRedisConfiguration
-@EnableLtiClient
+@EnableLtiClient(toolKeys = {"lms_courseunlocker"})
+@EnableGlobalErrorHandler
 @EnableCanvasClient
 @EnableConfigurationProperties(GitRepositoryState.class)
 public class WebApplication {

@@ -24,6 +24,12 @@ public class ApplicationConfig implements WebMvcConfigurer {
    }
 
    @Override
+   // used to read in various directories to add resources for the templates to use
+   public void addResourceHandlers(ResourceHandlerRegistry registry) {
+      registry.addResourceHandler("/app/jsrivet/**").addResourceLocations("classpath:/META-INF/resources/jsrivet/").resourceChain(true);
+   }
+
+   @Override
    public void addInterceptors(InterceptorRegistry registry) {
       List<HttpMethod> allowedMethodList = new ArrayList<>();
       allowedMethodList.add(HttpMethod.GET);
