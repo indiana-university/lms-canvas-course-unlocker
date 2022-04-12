@@ -1,0 +1,25 @@
+{
+  "title": "Unlock Course",
+  "description": "Allows an instructor to unlock/lock a course, especially after a term has finished.",
+  "oidc_initiation_url": "http://localhost:8080/lti/login_initiation/lms_courseunlocker",
+  "target_link_uri": "http://localhost:8080/app/launch",
+  "extensions": [
+    {
+      "domain": "localhost",
+      "platform": "canvas.instructure.com",
+      "privacy_level": "public",
+      "settings": {
+        "placements": [
+          {
+          }
+        ]
+      }
+    }
+  ],
+  "public_jwk_url": "http://localhost:8080/.well-known/jwks.json",
+  "custom_fields": {
+    "canvas_membership_roles": "$Canvas.membership.roles",
+    "canvas_course_id": "$Canvas.course.id",
+    "canvas_user_login_id": "$Canvas.user.loginId"
+  }
+}
