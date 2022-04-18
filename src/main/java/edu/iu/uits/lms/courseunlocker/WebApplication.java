@@ -1,6 +1,7 @@
 package edu.iu.uits.lms.courseunlocker;
 
 import edu.iu.uits.lms.canvas.config.EnableCanvasClient;
+import edu.iu.uits.lms.common.samesite.EnableCookieFilter;
 import edu.iu.uits.lms.common.server.GitRepositoryState;
 import edu.iu.uits.lms.common.server.ServerInfo;
 import edu.iu.uits.lms.common.server.ServerUtils;
@@ -23,6 +24,7 @@ import java.util.Date;
 @EnableLtiClient(toolKeys = {"lms_courseunlocker"})
 @EnableGlobalErrorHandler
 @EnableCanvasClient
+@EnableCookieFilter(ignoredRequestPatterns = "/rest/**")
 @EnableConfigurationProperties(GitRepositoryState.class)
 public class WebApplication {
 
