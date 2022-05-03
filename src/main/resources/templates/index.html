@@ -32,18 +32,13 @@
   #L%
   -->
 
-<html lang="en-US"
-      xmlns:th="http://www.thymeleaf.org">
-  <head>
-    <title>Unlock Course</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<html lang="en-US" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+</head>
+<body>
     <script th:inline="javascript">
-        parent.postMessage({subject: 'iu.unlockstatus', courseid: [[${courseId}]]}, '*');
+        window.top.location.href = /*[[${redirectUrl}]]*/;
     </script>
-  </head>
-  <body>
-    <footer class="rvt-ts-12 rvt-container rvt-m-top-lg">
-        <div id="footer" th:text="${@serverInfo}"></div>
-    </footer>
-  </body>
+</body>
 </html>

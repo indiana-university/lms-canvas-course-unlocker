@@ -33,7 +33,6 @@ package edu.iu.uits.lms.courseunlocker.rest;
  * #L%
  */
 
-import edu.iu.uits.lms.courseunlocker.controller.CourseUnlockerController;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockResponseObject;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
@@ -48,7 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/rest")
 @Slf4j
-public class CourseUnlockerRestController extends CourseUnlockerController {
+public class CourseUnlockerRestController {
 
    @Autowired
    CourseUnlockerService courseUnlockerService = null;

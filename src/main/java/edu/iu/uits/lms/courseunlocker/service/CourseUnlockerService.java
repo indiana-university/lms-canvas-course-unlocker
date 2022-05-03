@@ -37,6 +37,7 @@ import edu.iu.uits.lms.canvas.helpers.CourseHelper;
 import edu.iu.uits.lms.canvas.helpers.TermHelper;
 import edu.iu.uits.lms.canvas.model.CanvasTerm;
 import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.services.CanvasService;
 import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +53,9 @@ public class CourseUnlockerService  {
 
    @Autowired
    private CourseService courseService = null;
+
+   @Autowired
+   private CanvasService canvasService = null;
 
    public CourseUnlockStatus getCourseUnlockStatus(String courseId) {
       Course course = courseService.getCourse(courseId);
@@ -97,6 +101,10 @@ public class CourseUnlockerService  {
 
       //Update the date
       courseService.updateCourseEndDate(courseId, null, newStartDate, newEndDate, restrictEnrollmentsToCourseDates);
+   }
+
+   public String getCourseSettingsToolUrl(String courseId) {
+      return canvasService.getBaseUrl() + "/courses/" + courseId + "/settings";
    }
 
 }

@@ -78,7 +78,6 @@ public class CourseUnlockerController extends OidcTokenAwareController {
     public ModelAndView index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
         log.debug("in /index");
         OidcAuthenticationToken token = getValidatedToken(courseId);
-        model.addAttribute("courseId", courseId);
 
         CourseUnlockStatus status = courseUnlockerService.getCourseUnlockStatus(courseId);
         if (status.isButtonRendered()) {
@@ -93,6 +92,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
             throw new CourseUnlockerException();
         }
 
+        model.addAttribute("redirectUrl", courseUnlockerService.getCourseSettingsToolUrl(courseId));
         return new ModelAndView("index");
     }
 
@@ -100,8 +100,4 @@ public class CourseUnlockerController extends OidcTokenAwareController {
     public class CourseUnlockerException extends RuntimeException {
     }
 
-    @RequestMapping(value = "/accessDenied")
-    public String accessDenied() {
-        return "accessDenied";
-    }
 }
