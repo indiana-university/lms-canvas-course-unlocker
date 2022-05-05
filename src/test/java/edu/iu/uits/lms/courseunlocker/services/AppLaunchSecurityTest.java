@@ -54,7 +54,6 @@ import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenti
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
@@ -63,8 +62,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AppLaunchSecurityTest {
 
    public static String COURSE_ID_TST = "1234";
-
-   private static String REDIRECT_URL = "http://www.google.com/1234";
 
    @Autowired
    private MockMvc mvc;
@@ -76,7 +73,6 @@ public class AppLaunchSecurityTest {
    public void setup() {
       CourseUnlockStatus status = new CourseUnlockStatus(true, true, "1234");
       when(courseUnlockerService.getCourseUnlockStatus(COURSE_ID_TST)).thenReturn(status);
-      when(courseUnlockerService.getCourseSettingsToolUrl(COURSE_ID_TST)).thenReturn(REDIRECT_URL);
    }
 
    @Test
@@ -114,8 +110,7 @@ public class AppLaunchSecurityTest {
       mvc.perform(get("/app/index/" + COURSE_ID_TST)
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(redirectedUrl(REDIRECT_URL))
-              .andExpect(status().is3xxRedirection());
+              .andExpect(status().isOk());
    }
 
    @Test
