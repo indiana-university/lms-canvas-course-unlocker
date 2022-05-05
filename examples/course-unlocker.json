@@ -11,6 +11,9 @@
       "settings": {
         "placements": [
           {
+            "enabled": true,
+            "placement": "course_settings_sub_navigation",
+            "message_type": "LtiResourceLinkRequest"
           }
         ]
       }

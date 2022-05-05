@@ -48,7 +48,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.servlet.ModelAndView;
 import uk.ac.ox.ctl.lti13.security.oauth2.client.lti.authentication.OidcAuthenticationToken;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +64,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
     CourseUnlockerService courseUnlockerService = null;
 
     @RequestMapping("/launch")
-    public ModelAndView launch(Model model, HttpServletRequest request) {
+    public String launch(Model model, HttpServletRequest request) {
         OidcAuthenticationToken token = getTokenWithoutContext();
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);
         String courseId = oidcTokenUtils.getCourseId();
@@ -75,7 +74,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
 
     @RequestMapping("/index/{courseId}")
     @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
-    public ModelAndView index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
+    public String index(@PathVariable("courseId") String courseId, Model model, HttpServletRequest request) {
         log.debug("in /index");
         OidcAuthenticationToken token = getValidatedToken(courseId);
 
@@ -92,8 +91,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
             throw new CourseUnlockerException();
         }
 
-        model.addAttribute("redirectUrl", courseUnlockerService.getCourseSettingsToolUrl(courseId));
-        return new ModelAndView("index");
+        return "redirect:" + courseUnlockerService.getCourseSettingsToolUrl(courseId);
     }
 
     @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR, reason="Error saving course dates in Canvas to lock/unlock course")
