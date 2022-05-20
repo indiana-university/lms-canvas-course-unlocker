@@ -1,18 +1,49 @@
 package edu.iu.uits.lms.courseunlocker.services;
 
-import canvas.client.generated.api.CoursesApi;
-import canvas.client.generated.model.CanvasTerm;
-import canvas.client.generated.model.Course;
-import canvas.helpers.CanvasDateFormatUtil;
+/*-
+ * #%L
+ * course-unlocker
+ * %%
+ * Copyright (C) 2015 - 2022 Indiana University
+ * %%
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ * 
+ * 1. Redistributions of source code must retain the above copyright notice, this
+ *    list of conditions and the following disclaimer.
+ * 
+ * 2. Redistributions in binary form must reproduce the above copyright notice,
+ *    this list of conditions and the following disclaimer in the documentation
+ *    and/or other materials provided with the distribution.
+ * 
+ * 3. Neither the name of the Indiana University nor the names of its contributors
+ *    may be used to endorse or promote products derived from this software without
+ *    specific prior written permission.
+ * 
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ * IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
+ * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
+ * BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+ * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+ * OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+ * OF THE POSSIBILITY OF SUCH DAMAGE.
+ * #L%
+ */
+
+import edu.iu.uits.lms.canvas.helpers.CanvasDateFormatUtil;
+import edu.iu.uits.lms.canvas.model.CanvasTerm;
+import edu.iu.uits.lms.canvas.model.Course;
+import edu.iu.uits.lms.canvas.services.CourseService;
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
-import edu.iu.uits.lms.courseunlocker.controller.CourseUnlockerController;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +51,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
@@ -30,11 +60,10 @@ import java.util.Date;
 import java.util.List;
 
 
-@RunWith(SpringRunner.class)
-@WebMvcTest(CourseUnlockerController.class)
+@WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo"})
 @Import(ToolConfig.class)
 @ActiveProfiles("none")
-@Ignore
+@Disabled
 public class CourseUnlockerServiceTest {
 
 	private static final String COURSE_ID_PFX = "TESTCOURSEID";
@@ -48,12 +77,12 @@ public class CourseUnlockerServiceTest {
 	public static final String END_DATE_STRING = "2016-12-01T00:00:00Z";
 
 	@MockBean
-	private CoursesApi coursesApi;
+	private CourseService courseService;
 
 	@Autowired
 	private CourseUnlockerService cus;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 
@@ -69,14 +98,14 @@ public class CourseUnlockerServiceTest {
             course.setSisCourseId(COURSE_ID_PFX + i + "_SIS");
 			courseList.add(course);
 
-			Mockito.when(coursesApi.getCourse(COURSE_ID_PFX + i)).thenReturn(course);
+			Mockito.when(courseService.getCourse(COURSE_ID_PFX + i)).thenReturn(course);
 		}
 	}
 
 	@Test
 	public void testValidateServices() throws Exception {
-		Assert.assertNotNull("CoursesApi is null", coursesApi);
-		Assert.assertNotNull("CourseUnlockerService is null", cus);
+		Assertions.assertNotNull(courseService, "CourseService is null");
+		Assertions.assertNotNull(cus, "CourseUnlockerService is null");
 
 	}
 
@@ -107,11 +136,11 @@ public class CourseUnlockerServiceTest {
 	 * @throws Exception
 	 */
 	private void testCourseUnlockStatus(Course course, CourseUnlockStatus expectedStatus) throws Exception {
-		Mockito.when(coursesApi.getCourse(course.getId())).thenReturn(course);
+		Mockito.when(courseService.getCourse(course.getId())).thenReturn(course);
 
 		CourseUnlockStatus status = cus.getCourseUnlockStatus(course.getId());
 
-		Assert.assertEquals("statuses do not match", expectedStatus, status);
+		Assertions.assertEquals(expectedStatus, status, "statuses do not match");
 	}
 
 	@Test
