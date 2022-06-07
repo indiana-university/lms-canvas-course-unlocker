@@ -113,8 +113,6 @@ If you would like to expose the LTI authz endpoints in this tool (for CRUD opera
 need to enable it by including the value `ltirest` into the `SPRING_PROFILES_ACTIVE` environment variable. Be aware that
 if the tool requires multiple values, that there could be more than one profile value in there.
 
-See the [lms-canvas-lti-framework README](https://github.com/indiana-university/lms-canvas-lti-framework#create-a-controller-that-extends-lticontroller) for full details, as there are some additional configuration requirements.
-
 #### Enabling swagger-ui for the LTI authz REST endpoints
 :warning: Experimental :warning:
 
