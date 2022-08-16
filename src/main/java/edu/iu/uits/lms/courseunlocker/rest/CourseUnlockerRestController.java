@@ -36,6 +36,7 @@ package edu.iu.uits.lms.courseunlocker.rest;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockResponseObject;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -53,6 +54,7 @@ public class CourseUnlockerRestController {
    CourseUnlockerService courseUnlockerService = null;
 
    @GetMapping("/unlockstatus/{courseId}")
+   @Operation(summary = "Get the locked/unlocked status for a course")
    public @ResponseBody CourseUnlockResponseObject courseUnlockStatus(@PathVariable String courseId) {
       CourseUnlockStatus courseUnlockStatus = courseUnlockerService.getCourseUnlockStatus(courseId);
       String displayText = courseUnlockStatus.isCourseLocked()? "Unlock Course" : "Lock Course";
