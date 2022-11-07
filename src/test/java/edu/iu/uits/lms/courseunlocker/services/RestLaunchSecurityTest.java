@@ -33,10 +33,10 @@ package edu.iu.uits.lms.courseunlocker.services;
  * #L%
  */
 
+import edu.iu.uits.lms.common.test.CommonTestUtils;
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
-import edu.iu.uits.lms.lti.service.TestUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -80,7 +80,7 @@ public class RestLaunchSecurityTest {
       //This is not a secured endpoint so should be successful
       SecurityContextHolder.getContext().setAuthentication(null);
       mvc.perform(get("/rest/unlockstatus/1234")
-            .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
+            .header(HttpHeaders.USER_AGENT, CommonTestUtils.defaultUseragent())
             .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.jsonPath("$.buttonDisplayText").value("Unlock Course"))

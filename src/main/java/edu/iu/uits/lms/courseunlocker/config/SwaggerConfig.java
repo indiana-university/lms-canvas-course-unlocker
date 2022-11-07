@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.courseunlocker.rest;
+package edu.iu.uits.lms.courseunlocker.config;
 
 /*-
  * #%L
@@ -33,33 +33,34 @@ package edu.iu.uits.lms.courseunlocker.rest;
  * #L%
  */
 
-import edu.iu.uits.lms.courseunlocker.model.CourseUnlockResponseObject;
-import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
-import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.OAuthFlow;
+import io.swagger.v3.oas.annotations.security.OAuthFlows;
+import io.swagger.v3.oas.annotations.security.OAuthScope;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springdoc.core.GroupedOpenApi;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
-@RestController
-@RequestMapping("/rest")
-@Slf4j
-public class CourseUnlockerRestController {
+@Profile("swagger")
+@Configuration
+@OpenAPIDefinition(info = @Info(title = "Course Unlocker REST Endpoints", version = "${course-unlocker.version}"))
+@SecurityScheme(name = "security_auth_courseunlocker", type = SecuritySchemeType.OAUTH2,
+      flows = @OAuthFlows(authorizationCode = @OAuthFlow(
+            authorizationUrl = "${springdoc.oAuthFlow.authorizationUrl}",
+            scopes = {@OAuthScope(name = "lms:rest")},
+            tokenUrl = "${springdoc.oAuthFlow.tokenUrl}")))
+public class SwaggerConfig {
 
-   @Autowired
-   CourseUnlockerService courseUnlockerService = null;
-
-   @GetMapping("/unlockstatus/{courseId}")
-   @Operation(summary = "Get the locked/unlocked status for a course")
-   public @ResponseBody CourseUnlockResponseObject courseUnlockStatus(@PathVariable String courseId) {
-      CourseUnlockStatus courseUnlockStatus = courseUnlockerService.getCourseUnlockStatus(courseId);
-      String displayText = courseUnlockStatus.isCourseLocked()? "Unlock Course" : "Lock Course";
-
-      return new CourseUnlockResponseObject(displayText, courseUnlockStatus.isButtonRendered(), courseUnlockStatus.isCourseLocked(), courseId);
+   @Bean
+   public GroupedOpenApi groupedOpenApi() {
+      return GroupedOpenApi.builder()
+            .group("courseunlocker")
+            .packagesToScan("edu.iu.uits.lms.courseunlocker")
+            .build();
    }
 
 }

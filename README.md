@@ -4,52 +4,53 @@ Allows an instructor to unlock/lock a course, especially after a term has finish
 ## Running standalone
 Add env vars or system properties as desired.
 
-| ENV Property             | System Property          | Default Value          | Description                                                                                                    |
-|--------------------------|--------------------------|------------------------|----------------------------------------------------------------------------------------------------------------|
-| `APP_FULLFILEPATH`       | `app.fullFilePath`       | `/usr/src/app/config`  | Directory for configuration files                                                                              |
-| `APP_OVERRIDESFILENAME`  | `app.overridesFileName`  | `overrides.properties` | Customizable filename for additional configurations.  Would be located in the above directory.                 |
-| `SPRING_PROFILES_ACTIVE` | `spring.profiles.active` |                        | Supply spring profiles to activate.  See configuration details below for potential values.                     |
-| `APP_ENV`                | `app.env`                | `dev`                  | Environment designator.  Free-form and can be used for your own purposes.  Shows up in the application footer. |
-
+| ENV Property                           | System Property                        | Default Value          | Description                                                                                                    |
+|----------------------------------------|----------------------------------------|------------------------|----------------------------------------------------------------------------------------------------------------|
+| `APP_FULLFILEPATH`                     | `app.fullFilePath`                     | `/usr/src/app/config`  | Directory for configuration files                                                                              |
+| `APP_OVERRIDESFILENAME`                | `app.overridesFileName`                | `overrides.properties` | Customizable filename for additional configurations.  Would be located in the above directory.                 |
+| `SPRING_PROFILES_ACTIVE`               | `spring.profiles.active`               |                        | Supply spring profiles to activate.  See configuration details below for potential values.                     |
+| `APP_ENV`                              | `app.env`                              | `dev`                  | Environment designator.  Free-form and can be used for your own purposes.  Shows up in the application footer. |
+| `LTI_CLIENTREGISTRATION_DEFAULTCLIENT` | `lti.clientregistration.defaultClient` | canvas                 | Specify the launching configuration to expect (canvas/saltire)                                                 |
 
 ## Setup Database
 After compiling, see `target/generated-resources/sql/ddl/auto/postgresql9.sql` for appropriate ddl.
-Insert a record into the `LTI_AUTHZ` table with a key and secret.  The context should be either `lms_lti_multiclassmessenger` or `*`.
-A wildcard (`*`) is useful for testing multiple tools, but may not be recommended in production environments.
+Insert a record into the `LTI_13_AUTHZ` table with your tool's registration_id (`lms_courseunlocker`), along with the client_id 
+and secret from Canvas's Developer Key.  An `env` designator is also required here, and allows a database to support 
+multiple environments simultaneously (dev and reg, for example).
 
 ## Test a local launch
-Use an LTI tool consumer launcher, like http://ltiapps.net/test/tc.php.  Provide an appropriate key/secret, as defined above.
+Startup the application with the `LTI_CLIENTREGISTRATION_DEFAULTCLIENT` value set to `saltire`.
+Use an LTI tool consumer launcher, like https://saltire.lti.app/platform.
+Default values are fine, with the below exceptions...
 
+In the `Message` section, set the following:
 <table>
 <tr><th>Property</th><th>Value</th></tr>
-<tr><td>Launch URL</td><td>http://localhost:8080/lti</td></tr>
-<tr><td>Consumer Key</td><td>
-
-`<value from database above>`
-
-</td></tr>
-<tr><td>Shared secret</td><td>
-
-`<value from database above>`
-
-</td></tr>
-<tr><td>Role</td><td>
-
-An appropriate LTI role, like `Instructor`, `Learner`, etc
-
-</td></tr>
 <tr><td>Custom parameters</td><td>
 
 ```
 canvas_course_id=123456
-canvas_user_login_id=chmaurer
+canvas_user_login_id=johnsmith
+canvas_membership_roles=Instructor
 ```
 
 </td></tr>
 </table>
 
-## Canvas XML
-Example xml for both the announcements and messages tools can be found in the [examples](examples) directory.
+Use an appropriate `canvas_course_id` and `canvas_user_login_id`.
+
+From the `Security Model` section, set the following:
+<table>
+<tr><th>Property</th><th>Value</th></tr>
+<tr><td>LTI version</td><td>1.3.0</td></tr>
+<tr><td>Message URL</td><td>http://localhost:8080/app/launch</td></tr>
+<tr><td>Client ID</td><td>dev (or whatever is appropriate based on the record inserted in the database table from above)</td></tr>
+<tr><td>Initiate login URL</td><td>http://localhost:8080/lti/login_initiation/lms_courseunlocker</td></tr>
+<tr><td>Redirection URI(s)</td><td>http://localhost:8080/lti/login</td></tr>
+</table>
+
+## Canvas JSON
+Example json for the tool can be found in the [examples](examples) directory.
 
 ## Configuration
 If choosing to use properties files for the configuration values, the default location is `/usr/src/app/config`, but that can be overridden by setting the `APP_FULLFILEPATH` value via system property or environment variable.
@@ -117,7 +118,7 @@ if the tool requires multiple values, that there could be more than one profile 
 :warning: Experimental :warning:
 
 If you would like to enable the swagger-ui for interacting with the endpoints, include the value `swagger` into the `SPRING_PROFILES_ACTIVE` environment variable.
-Once enabled, the ui will be available at `/api/lti/swagger-ui.html`.  There are some additional OAuth2 considerations
+Once enabled, the ui will be available at `/api/swagger-ui.html`.  There are some additional OAuth2 considerations
 that need to be accounted for while using this setup.
 
 This is marked as experimental due to the fact that we aren't running with this option at IU.  We are running into CORS

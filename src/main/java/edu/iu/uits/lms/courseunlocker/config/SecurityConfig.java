@@ -59,9 +59,10 @@ public class SecurityConfig {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http.requestMatchers().antMatchers("/rest/**")
+            http.requestMatchers().antMatchers("/api/**", "/rest/**")
                     .and()
                     .authorizeRequests()
+                    .antMatchers("/api/**").permitAll()
                     .antMatchers("/rest/unlockstatus/**").permitAll()
                     .antMatchers("/rest/**").access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
                     .and()

@@ -1,4 +1,4 @@
-package edu.iu.uits.lms.courseunlocker.rest;
+package edu.iu.uits.lms.courseunlocker.services.swagger;
 
 /*-
  * #%L
@@ -33,33 +33,12 @@ package edu.iu.uits.lms.courseunlocker.rest;
  * #L%
  */
 
-import edu.iu.uits.lms.courseunlocker.model.CourseUnlockResponseObject;
-import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
-import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
-import io.swagger.v3.oas.annotations.Operation;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import edu.iu.uits.lms.courseunlocker.WebApplication;
+import edu.iu.uits.lms.courseunlocker.config.SecurityConfig;
+import edu.iu.uits.lms.lti.swagger.AbstractSwaggerCustomTest;
+import org.springframework.boot.test.context.SpringBootTest;
 
-@RestController
-@RequestMapping("/rest")
-@Slf4j
-public class CourseUnlockerRestController {
-
-   @Autowired
-   CourseUnlockerService courseUnlockerService = null;
-
-   @GetMapping("/unlockstatus/{courseId}")
-   @Operation(summary = "Get the locked/unlocked status for a course")
-   public @ResponseBody CourseUnlockResponseObject courseUnlockStatus(@PathVariable String courseId) {
-      CourseUnlockStatus courseUnlockStatus = courseUnlockerService.getCourseUnlockStatus(courseId);
-      String displayText = courseUnlockStatus.isCourseLocked()? "Unlock Course" : "Lock Course";
-
-      return new CourseUnlockResponseObject(displayText, courseUnlockStatus.isButtonRendered(), courseUnlockStatus.isCourseLocked(), courseId);
-   }
+@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class})
+public class SwaggerCustomTest extends AbstractSwaggerCustomTest {
 
 }
