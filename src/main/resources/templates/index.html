@@ -39,7 +39,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet-bundle.min.css}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/app/jsrivet/rivet.min.css}" />
 
     <style>
         #load {
@@ -56,7 +56,7 @@
     </style>
 </head>
 <body>
-<div class="rvt-container" role="main">
+<div class="rvt-container-xl" role="main">
     <div id="load" class="rvt-flex rvt-justify-center">
         <div class="rvt-loader rvt-loader--lg" aria-label="Content loading"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
     </div>
@@ -64,5 +64,9 @@
     <script th:inline="javascript">
         window.top.location.href = /*[[${redirectUrl}]]*/;
     </script>
+<script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
+<script>
+  Rivet.init();
+</script>
 </body>
 </html>
