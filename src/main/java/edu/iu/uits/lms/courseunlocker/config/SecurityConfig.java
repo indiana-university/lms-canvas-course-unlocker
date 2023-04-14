@@ -33,6 +33,8 @@ package edu.iu.uits.lms.courseunlocker.config;
  * #L%
  */
 
+import edu.iu.uits.lms.common.it12logging.LmsFilterSecurityInterceptorObjectPostProcessor;
+import edu.iu.uits.lms.common.it12logging.RestSecurityLoggingConfig;
 import edu.iu.uits.lms.common.oauth.CustomJwtAuthenticationConverter;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
@@ -40,6 +42,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -62,6 +65,8 @@ public class SecurityConfig {
             http.requestMatchers().antMatchers("/api/**", "/rest/**")
                     .and()
                     .authorizeRequests()
+                    // In order to allow CORS preflight requests to succeed, we need to allow OPTIONS requests to the token endpoint
+                    .antMatchers(HttpMethod.OPTIONS, "/rest/**").permitAll()
                     .antMatchers("/api/**").permitAll()
                     .antMatchers("/rest/unlockstatus/**").permitAll()
                     .antMatchers("/rest/**").access("hasAuthority('SCOPE_lms:rest') and hasAuthority('ROLE_LMS_REST_ADMINS')")
@@ -70,6 +75,8 @@ public class SecurityConfig {
                     .and()
                     .oauth2ResourceServer()
                     .jwt().jwtAuthenticationConverter(new CustomJwtAuthenticationConverter());
+
+            http.apply(new RestSecurityLoggingConfig());
         }
     }
 
@@ -88,7 +95,9 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers(WELL_KNOWN_ALL).permitAll()
-                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE);
+                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE)
+                  .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor());
+
 
             //Setup the LTI handshake
             Lti13Configurer lti13Configurer = new Lti13Configurer()
@@ -100,14 +109,14 @@ public class SecurityConfig {
             http.requestMatchers().antMatchers("/**")
                     .and()
                     .authorizeRequests()
-                    .anyRequest().authenticated();
+                    .anyRequest().authenticated()
+                    .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor());
         }
 
         @Override
         public void configure(WebSecurity web) throws Exception {
             // ignore everything except paths specified
-            web.ignoring().antMatchers("/actuator/**", "/app/jsrivet/**");
+            web.ignoring().antMatchers("/app/jsrivet/**");
         }
-
     }
 }
