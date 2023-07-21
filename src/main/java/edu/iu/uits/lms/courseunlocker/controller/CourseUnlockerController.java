@@ -65,6 +65,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
     CourseUnlockerService courseUnlockerService = null;
 
     @RequestMapping("/launch")
+    @Secured({LTIConstants.INSTRUCTOR_AUTHORITY})
     public ModelAndView launch(Model model, HttpServletRequest request) {
         OidcAuthenticationToken token = getTokenWithoutContext();
         OidcTokenUtils oidcTokenUtils = new OidcTokenUtils(token);

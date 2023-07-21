@@ -94,7 +94,7 @@ public class SecurityConfig {
                   .and()
                   .authorizeRequests()
                   .antMatchers(WELL_KNOWN_ALL).permitAll()
-                  .antMatchers("/app/**").hasRole(LTIConstants.INSTRUCTOR_ROLE)
+                  .antMatchers("/app/**").hasRole(LTIConstants.BASE_USER_ROLE)
                   .withObjectPostProcessor(new LmsFilterSecurityInterceptorObjectPostProcessor());
 
 

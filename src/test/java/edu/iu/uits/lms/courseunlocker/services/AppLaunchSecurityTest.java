@@ -38,6 +38,7 @@ import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
 import edu.iu.uits.lms.lti.LTIConstants;
 import edu.iu.uits.lms.lti.config.TestUtils;
+import edu.iu.uits.lms.lti.model.ServerConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +125,8 @@ public class AppLaunchSecurityTest {
       mvc.perform(get("/app/index/" + COURSE_ID_TST)
               .header(HttpHeaders.USER_AGENT, TestUtils.defaultUseragent())
               .contentType(MediaType.APPLICATION_JSON))
-              .andExpect(status().isForbidden());
+              .andExpect(status().isInternalServerError())
+              .andExpect(MockMvcResultMatchers.view().name (ServerConfig.GLOBAL_ACCESS_DENIED));
    }
 
    @Test
