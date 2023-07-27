@@ -13,7 +13,7 @@
         <relativePath /> <!-- lookup parent from repository -->
     </parent>
 
-    <version>5.0.6-SNAPSHOT</version>
+    <version>5.0.6</version>
     <description>Allows an instructor to unlock/lock a course, especially after a term has finished.</description>
     <url>https://github.com/indiana-university/lms-canvas-course-unlocker</url>
     <inceptionYear>2015</inceptionYear>
@@ -62,7 +62,7 @@
         <connection>scm:git:https://github.com/indiana-university/lms-canvas-course-unlocker.git</connection>
         <developerConnection>scm:git:https://github.com/indiana-university/lms-canvas-course-unlocker.git</developerConnection>
         <url>https://github.com/indiana-university/lms-canvas-course-unlocker</url>
-        <tag>HEAD</tag>
+        <tag>course-unlocker-5.0.6</tag>
     </scm>
 
     <properties>
