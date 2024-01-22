@@ -35,7 +35,7 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lock/Unlock Course</title>
+    <title th:text=${loadingText}>Lock/Unlock Course</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8" />
@@ -56,9 +56,9 @@
     </style>
 </head>
 <body>
-<div class="rvt-container-xl" role="main">
+<div class="rvt-container-xl" role="main" aria-label="Lock/Unlock Course">
     <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg" aria-label="Content loading"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
+        <div class="rvt-loader rvt-loader--lg" aria-live="polite"></div><span class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
     </div>
 </div>
     <script th:inline="javascript">
