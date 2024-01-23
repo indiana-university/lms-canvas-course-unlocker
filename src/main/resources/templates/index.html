@@ -56,13 +56,19 @@
     </style>
 </head>
 <body>
-<div class="rvt-container-xl" role="main" aria-label="Lock/Unlock Course">
+<div class="rvt-container-xl">
     <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg" aria-live="polite"></div><span class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
+        <div class="rvt-loader rvt-loader--lg"></div><span id="loadingText" tabindex="-1" class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
     </div>
 </div>
     <script th:inline="javascript">
         window.top.location.href = /*[[${redirectUrl}]]*/;
+
+        // focus on the loading text so it will be read by screenreader
+        const text = document.getElementById("loadingText");
+        if (text) {
+          text.focus();
+        }
     </script>
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
 <script>
