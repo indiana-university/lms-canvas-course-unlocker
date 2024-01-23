@@ -49,23 +49,25 @@
             left: 0;
             right: 0;
             margin: auto;
-            width: 25%;
             height: 25%;
             white-space: nowrap;
+        }
+        #loading-text:focus {
+            outline: none;
         }
     </style>
 </head>
 <body>
 <div class="rvt-container-xl">
     <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg"></div><span id="loadingText" tabindex="-1" class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
+        <div class="rvt-loader rvt-loader--lg"></div><span id="loading-text" tabindex="-1" class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
     </div>
 </div>
     <script th:inline="javascript">
         window.top.location.href = /*[[${redirectUrl}]]*/;
 
         // focus on the loading text so it will be read by screenreader
-        const text = document.getElementById("loadingText");
+        const text = document.getElementById("loading-text");
         if (text) {
           text.focus();
         }
