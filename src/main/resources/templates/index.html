@@ -52,6 +52,9 @@
             height: 25%;
             white-space: nowrap;
         }
+        #loading-text::after {
+           content: "...";
+        }
     </style>
 </head>
 <body>
@@ -63,13 +66,13 @@
     <div id="success-text" tabindex="-1"  class="rvt-sr-only" th:text="${successText}" />
 </div>
     <script th:inline="javascript">
-        window.top.location.href = /*[[${redirectUrl}]]*/;
-
         // focus on the success text so it will be read by screenreader
         const text = document.getElementById("success-text");
         if (text) {
           text.focus();
         }
+
+        window.top.location.href = /*[[${redirectUrl}]]*/;
     </script>
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
 <script>

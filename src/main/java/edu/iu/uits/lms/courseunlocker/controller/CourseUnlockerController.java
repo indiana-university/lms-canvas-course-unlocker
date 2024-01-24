@@ -94,7 +94,7 @@ public class CourseUnlockerController extends OidcTokenAwareController {
         }
 
         // Add more descriptive loading text
-        String loadingText = status.isCourseLocked() ? "Unlocking course..." : "Locking course...";
+        String loadingText = status.isCourseLocked() ? "Unlocking course" : "Locking course";
         model.addAttribute("loadingText", loadingText);
 
         // If we got to this point, it must have been successful. Add SR-only text to be read
