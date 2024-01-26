@@ -35,7 +35,7 @@
 <html lang="en-US"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Lock/Unlock Course</title>
+    <title th:text=${loadingText}>Lock/Unlock Course</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta charset="utf-8" />
@@ -49,19 +49,29 @@
             left: 0;
             right: 0;
             margin: auto;
-            width: 25%;
             height: 25%;
             white-space: nowrap;
+        }
+        #loading-text::after {
+           content: "...";
         }
     </style>
 </head>
 <body>
-<div class="rvt-container-xl" role="main">
+<div class="rvt-container-xl" role="main" th:attr="aria-label=${loadingText}">
     <div id="load" class="rvt-flex rvt-justify-center">
-        <div class="rvt-loader rvt-loader--lg" aria-label="Content loading"></div><span class="rvt-ts-md rvt-m-left-sm">Loading...</span>
+        <div class="rvt-loader rvt-loader--lg"></div><span id="loading-text" class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
     </div>
+
+    <div id="success-text" tabindex="-1"  class="rvt-sr-only" th:text="${successText}" />
 </div>
     <script th:inline="javascript">
+        // focus on the success text so it will be read by screenreader
+        const text = document.getElementById("success-text");
+        if (text) {
+          text.focus();
+        }
+
         window.top.location.href = /*[[${redirectUrl}]]*/;
     </script>
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>

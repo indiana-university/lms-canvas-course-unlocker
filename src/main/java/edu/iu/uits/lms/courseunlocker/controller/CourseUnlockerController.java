@@ -93,6 +93,14 @@ public class CourseUnlockerController extends OidcTokenAwareController {
             throw new CourseUnlockerException();
         }
 
+        // Add more descriptive loading text
+        String loadingText = status.isCourseLocked() ? "Unlocking course" : "Locking course";
+        model.addAttribute("loadingText", loadingText);
+
+        // If we got to this point, it must have been successful. Add SR-only text to be read
+        String successText = status.isCourseLocked() ? "Course is now unlocked" : "Course is now locked";
+        model.addAttribute("successText", successText);
+
         model.addAttribute("redirectUrl", courseUnlockerService.getCourseSettingsToolUrl(courseId));
         return new ModelAndView("index");
     }
