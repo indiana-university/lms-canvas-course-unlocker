@@ -67,10 +67,22 @@
 </div>
     <script th:inline="javascript">
         // focus on the success text so it will be read by screenreader
-        const text = document.getElementById("success-text");
+        let text = document.getElementById("success-text");
         if (text) {
           text.focus();
+
+          let alertText = text.innerHTML;
+
+          window.parent.postMessage(
+              {
+                subject: 'lti.screenReaderAlert',
+                body: alertText,
+              },
+              '*'
+            )
         }
+
+
 
         window.top.location.href = /*[[${redirectUrl}]]*/;
     </script>
