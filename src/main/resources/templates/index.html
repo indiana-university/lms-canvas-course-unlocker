@@ -71,15 +71,17 @@
         if (text) {
           text.focus();
 
-          let alertText = text.innerHTML;
+          let alertText = 'I am trying to alert you!'; //text.innerHTML;
 
-          window.parent.postMessage(
-              {
-                subject: 'lti.screenReaderAlert',
-                body: alertText,
-              },
-              '*'
-            )
+          parent.postMessage(JSON.stringify({subject: 'lti.screenReaderAlert', body: alertText}), '*');
+
+<!--          window.parent.postMessage(-->
+<!--              {-->
+<!--                subject: 'lti.screenReaderAlert',-->
+<!--                body: alertText,-->
+<!--              },-->
+<!--              '*'-->
+<!--            )-->
         }
 
 
