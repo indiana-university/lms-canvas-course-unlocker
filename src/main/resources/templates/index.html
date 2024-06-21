@@ -66,6 +66,7 @@
     <div id="success-text" tabindex="-1"  class="rvt-sr-only" th:text="${successText}" />
 </div>
     <script th:inline="javascript">
+    setTimeout(() => {
         // focus on the success text so it will be read by screenreader
         let text = document.getElementById("success-text");
         if (text) {
@@ -75,18 +76,11 @@
 
           parent.postMessage(JSON.stringify({subject: 'lti.screenReaderAlert', body: alertText}), '*');
 
-<!--          window.parent.postMessage(-->
-<!--              {-->
-<!--                subject: 'lti.screenReaderAlert',-->
-<!--                body: alertText,-->
-<!--              },-->
-<!--              '*'-->
-<!--            )-->
         }
 
-
-
         window.top.location.href = /*[[${redirectUrl}]]*/;
+    }, 5000);
+
     </script>
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
 <script>
