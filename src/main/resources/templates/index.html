@@ -70,6 +70,7 @@
         const text = document.getElementById("success-text");
         if (text) {
           text.focus();
+          parent.postMessage(JSON.stringify({subject: 'lti.screenReaderAlert', body: text.innerHTML}), '*');
         }
 
         window.top.location.href = /*[[${redirectUrl}]]*/;
