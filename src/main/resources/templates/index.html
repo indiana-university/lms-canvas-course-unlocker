@@ -62,24 +62,23 @@
     <div id="load" class="rvt-flex rvt-justify-center">
         <div class="rvt-loader rvt-loader--lg"></div><span id="loading-text" class="rvt-ts-md rvt-m-left-sm" th:text=${loadingText}>Loading...</span>
     </div>
-
-    <div id="success-text" tabindex="-1"  class="rvt-sr-only" th:text="${successText}" />
+    <div role="alert">
+        <span id="success-text" class="rvt-sr-only" th:data-message="${successText}"></span>
+    </div>
 </div>
     <script th:inline="javascript">
-    setTimeout(() => {
-        // focus on the success text so it will be read by screenreader
-        let text = document.getElementById("success-text");
-        if (text) {
-          text.focus();
+        setTimeout(() => {
+            // focus on the success text so it will be read by screenreader
+            let successMsg = document.getElementById("success-text");
+            if (successMsg) {
+              let msgText = successMsg.dataset.message;
+              successMsg.innerHTML = msgText;
+              successMsg.focus();
+              parent.postMessage(JSON.stringify({subject: 'lti.screenReaderAlert', body: msgText}), '*');
+            }
 
-          let alertText = 'I am trying to alert you!'; //text.innerHTML;
-
-          parent.postMessage(JSON.stringify({subject: 'lti.screenReaderAlert', body: alertText}), '*');
-
-        }
-
-        window.top.location.href = /*[[${redirectUrl}]]*/;
-    }, 5000);
+            window.top.location.href = /*[[${redirectUrl}]]*/;
+        }, 3000);
 
     </script>
 <script type="text/javascript" th:src="@{/app/jsrivet/rivet.min.js}"></script>
