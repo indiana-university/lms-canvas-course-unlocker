@@ -86,7 +86,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         MailHealthContributorAutoConfiguration.class})
 @AutoConfigureTestDatabase
 @Slf4j
-public class ItLoggingTest {
+public class It12LoggingTest {
     @Autowired
     private MockMvc mvc;
 
