@@ -48,9 +48,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.text.SimpleDateFormat;
 import java.time.ZoneOffset;
@@ -76,7 +76,7 @@ public class CourseUnlockerServiceTest {
 
 	public static final String END_DATE_STRING = "2016-12-01T00:00:00Z";
 
-	@MockBean
+	@MockitoBean
 	private CourseService courseService;
 
 	@Autowired

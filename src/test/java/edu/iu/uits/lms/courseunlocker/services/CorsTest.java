@@ -34,20 +34,24 @@ package edu.iu.uits.lms.courseunlocker.services;
  */
 
 import edu.iu.uits.lms.common.test.CommonTestUtils;
+import edu.iu.uits.lms.courseunlocker.config.SecurityConfig;
 import edu.iu.uits.lms.courseunlocker.config.ToolConfig;
 import edu.iu.uits.lms.courseunlocker.model.CourseUnlockStatus;
+import edu.iu.uits.lms.courseunlocker.rest.CourseUnlockerRestController;
 import edu.iu.uits.lms.courseunlocker.service.CourseUnlockerService;
+import edu.iu.uits.lms.lti.service.LmsDefaultGrantedAuthoritiesMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
@@ -56,8 +60,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(properties = {"oauth.tokenprovider.url=http://foo", "lms.swagger.cors.origin=asdf", "lms.js.cors.origin=http://www.someurl.com"})
-@Import(ToolConfig.class)
+@WebMvcTest(controllers = CourseUnlockerRestController.class, properties = {"oauth.tokenprovider.url=http://foo", "lms.swagger.cors.origin=asdf", "lms.js.cors.origin=http://www.someurl.com"})
+@ContextConfiguration(classes = {ToolConfig.class, CourseUnlockerRestController.class, SecurityConfig.class})
 @Slf4j
 @ActiveProfiles("swagger")
 public class CorsTest {
@@ -67,8 +71,14 @@ public class CorsTest {
    @Autowired
    private MockMvc mvc;
 
-   @MockBean
+   @MockitoBean
    private CourseUnlockerService courseUnlockerService;
+
+   @MockitoBean
+   private LmsDefaultGrantedAuthoritiesMapper lmsDefaultGrantedAuthoritiesMapper;
+
+   @MockitoBean
+   private ClientRegistrationRepository clientRegistrationRepository;
 
    @BeforeEach
    public void setup() {

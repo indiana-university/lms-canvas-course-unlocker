@@ -4,7 +4,7 @@ package edu.iu.uits.lms.courseunlocker.services.swagger;
  * #%L
  * course-unlocker
  * %%
- * Copyright (C) 2015 - 2022 Indiana University
+ * Copyright (C) 2015 - 2025 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -33,12 +33,33 @@ package edu.iu.uits.lms.courseunlocker.services.swagger;
  * #L%
  */
 
-import edu.iu.uits.lms.courseunlocker.WebApplication;
 import edu.iu.uits.lms.courseunlocker.config.SecurityConfig;
-import edu.iu.uits.lms.lti.swagger.AbstractSwaggerUiCustomTest;
-import org.springframework.boot.test.context.SpringBootTest;
+import edu.iu.uits.lms.courseunlocker.config.SwaggerConfig;
+import edu.iu.uits.lms.lti.config.LtiClientTestConfig;
+import edu.iu.uits.lms.lti.config.LtiRestConfiguration;
+import edu.iu.uits.lms.lti.swagger.SwaggerTestingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
-@SpringBootTest(classes = {WebApplication.class, SecurityConfig.class, SwaggerCourseUnlockerTestConfig.class})
-public class SwaggerUiCustomTest extends AbstractSwaggerUiCustomTest {
+import java.util.ArrayList;
+import java.util.List;
+
+@Import({
+        SecurityConfig.class,
+        SwaggerConfig.class,
+        edu.iu.uits.lms.lti.config.SwaggerConfig.class,
+        LtiRestConfiguration.class,
+        LtiClientTestConfig.class
+})
+public class CourseUnlockerSwaggerConfig {
+
+   @Bean
+   public SwaggerTestingBean swaggerTestingBean() {
+      SwaggerTestingBean stb = new SwaggerTestingBean();
+
+      List<String> expandedList = new ArrayList<>();
+      stb.setEmbeddedSwaggerToolPaths(expandedList);
+      return stb;
+   }
 
 }
