@@ -4,7 +4,7 @@ package edu.iu.uits.lms.courseunlocker.services;
  * #%L
  * course-unlocker
  * %%
- * Copyright (C) 2015 - 2025 Indiana University
+ * Copyright (C) 2015 - 2026 Indiana University
  * %%
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -51,7 +51,6 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 import org.springframework.boot.health.autoconfigure.actuate.endpoint.HealthEndpointAutoConfiguration;
 import org.springframework.boot.health.autoconfigure.contributor.HealthContributorAutoConfiguration;
 import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabase;
-import org.springframework.boot.mail.autoconfigure.MailHealthContributorAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.HttpHeaders;
@@ -82,8 +81,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 "lms.js.cors.origin=123"})
 @AutoConfigureMockMvc
 @ActiveProfiles({"it12log", "swagger", "it12"})
-@EnableAutoConfiguration(exclude = {HealthContributorAutoConfiguration.class, HealthEndpointAutoConfiguration.class,
-        MailHealthContributorAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {HealthContributorAutoConfiguration.class, HealthEndpointAutoConfiguration.class})
 @AutoConfigureTestDatabase
 @Slf4j
 public class It12LoggingTest {
