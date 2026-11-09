@@ -62,6 +62,10 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import uk.ac.ox.ctl.lti13.ags.DeepLinkService;
+import uk.ac.ox.ctl.lti13.ags.LineItemService;
+import uk.ac.ox.ctl.lti13.ags.ResultService;
+import uk.ac.ox.ctl.lti13.ags.ScoreService;
 import uk.ac.ox.ctl.lti13.nrps.NamesRoleService;
 
 import java.time.Instant;
@@ -97,8 +101,21 @@ public class It12LoggingTest {
     @MockitoBean
     private BufferingApplicationStartup bufferingApplicationStartup;
 
+    // These LTI service beans read the tool's signing key pair when they're created, and the test database has none
     @MockitoBean
     private NamesRoleService namesRoleService;
+
+    @MockitoBean
+    private LineItemService lineItemService;
+
+    @MockitoBean
+    private ScoreService scoreService;
+
+    @MockitoBean
+    private ResultService resultService;
+
+    @MockitoBean
+    private DeepLinkService deepLinkService;
 
     @MockitoBean
     private CorsSwaggerConfig corsSwaggerConfig;
